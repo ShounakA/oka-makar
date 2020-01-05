@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>OKA Makar Sankranti </title>
+    <link rel="stylesheet" href="style.css">
+    <script  src="script.js"></script>
+  </head>
+  <body>
+    <div id="rules">
+      <h1>OKA Makar Sankranti</h1>
+      <h2>Rules</h2>
+      <h3>Sing and identify the song of the provided scrambled words in 15 secs</h3>
+      <h4><em>HINT: from 60/70/80s</em></h4>
+      <h4><em>BONUS: identify its movie</em></h4>
+      <p id="isReady">Not Ready</p>
+    </div>
+    <p id="songs"></p>
+    <button onclick="getSong()">Shuffle a Song</button>
+    <button onclick="finishGame()">Finish Game </button>
+    <button id="timer">Start Timer</button>
+  <!-- UnComment me out if needed   -->
+    <p>
+      Songs Left: <em id="remain"></em>
+    </p>
+    <h1 id="time"></h1>
+    <div id="player">
+
+    </div>
+    <a id="fulllink" target="_blank" href="#">Song on Youtube</a>
+  </body>
+</html>
