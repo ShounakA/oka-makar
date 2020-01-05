@@ -18,7 +18,7 @@ window.onload = function () {
   //change me to shuffle must be comma seperated.
   TIMER_DURATION =15; //in seconds
   // sixtysongs = "Yeh reshmi zulfein ye sharbati aankhen tumhe dekh kar - DO RAASTE,Aaja aaja mein hun pyar tera walla walla - TESRI MANZIL,Pholon ke rang se rang ki umang se -PREM PUJARI,Din Dhal Jayehai raat na jaye tu tho na ayi teri yaad satay -  GUIDE,Abhi na jao chhod kar ke dil abhi bhara nahi - HUMDONNO,Roop Tera mastana pyar mera diwan bhool kahi ham se na hoja ye - ARADHANA,Hoth  pe aisi baat mai daba ke chali aai khol jaye - JEWEL THIEF,Mora gora aanga laie le mohe saam rang dayi de choopa jooinge raath - BANDINI,Bhai Bhattur Bhai Bhattur ham jaiyenge kitane door najooka naaajok meri jawani  -PADOSAN,Ye mera prem patra padh kar tum naraj na hona  - SANGAM,Piya aiso jiya mein  samiye gayo re  - SAHIB BIWI GHULAM,Gunaam Hai koi -  GUNAAM,mujhe teri mohabbat ka sahara  - AAP AYE BAHAR AAYE,Chahunga mein tujhe sanjh savre - DOSTI,Sawan ka mahina pawan kare shore jiyarar- MILAN,Nain lade jahien to manwa kasak hoi bekarey - GANGA JAMUNA,Ude jab jab zulfen teri  kawarioka dil machle  - NAYA DAUR,Dil ke Jharoke me tuzko bethakar yadonke   - BRAHAMCHARI,Mere Mehboob tuje Meri Mohabat ki kasam  - MERE MEHBOOB,Mohe panghat pe nandlal ched gayo rey morei naajuak kalaya marod  - MUGHAL E AZAM ,Dil ka bhanwar kare pukar pyar karaag suno pyar ka raag suno re  - TERE GHAR KE SAMNE,Diwana mastana hua dil jaane khana hoke bahar aayi - BOMBAY KA BABU,Kahin deep jale kahin dil - BEES SAAL BAAD,Laal chaadi maidan khadi kya khoob ladi  - JANWAR";
-  file  = "../songs.csv";
+  file  = "songs.csv";
   fetch(file)
   .then(response => 
     response.text()
