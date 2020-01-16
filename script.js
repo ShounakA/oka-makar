@@ -12,36 +12,24 @@ Array.prototype.shuffle = function() {
     return this;
 };
 //pls no touch
-var songsDict = [];
+var yearDict={"60":[],"70":[],"80":[]};
+var songsDict;
 var prevSongs=[];
+var TIMER_DURATION =15; //in seconds
 window.onload = function () {
   //change me to shuffle must be comma seperated.
-  TIMER_DURATION =15; //in seconds
-  // sixtysongs = "Yeh reshmi zulfein ye sharbati aankhen tumhe dekh kar - DO RAASTE,Aaja aaja mein hun pyar tera walla walla - TESRI MANZIL,Pholon ke rang se rang ki umang se -PREM PUJARI,Din Dhal Jayehai raat na jaye tu tho na ayi teri yaad satay -  GUIDE,Abhi na jao chhod kar ke dil abhi bhara nahi - HUMDONNO,Roop Tera mastana pyar mera diwan bhool kahi ham se na hoja ye - ARADHANA,Hoth  pe aisi baat mai daba ke chali aai khol jaye - JEWEL THIEF,Mora gora aanga laie le mohe saam rang dayi de choopa jooinge raath - BANDINI,Bhai Bhattur Bhai Bhattur ham jaiyenge kitane door najooka naaajok meri jawani  -PADOSAN,Ye mera prem patra padh kar tum naraj na hona  - SANGAM,Piya aiso jiya mein  samiye gayo re  - SAHIB BIWI GHULAM,Gunaam Hai koi -  GUNAAM,mujhe teri mohabbat ka sahara  - AAP AYE BAHAR AAYE,Chahunga mein tujhe sanjh savre - DOSTI,Sawan ka mahina pawan kare shore jiyarar- MILAN,Nain lade jahien to manwa kasak hoi bekarey - GANGA JAMUNA,Ude jab jab zulfen teri  kawarioka dil machle  - NAYA DAUR,Dil ke Jharoke me tuzko bethakar yadonke   - BRAHAMCHARI,Mere Mehboob tuje Meri Mohabat ki kasam  - MERE MEHBOOB,Mohe panghat pe nandlal ched gayo rey morei naajuak kalaya marod  - MUGHAL E AZAM ,Dil ka bhanwar kare pukar pyar karaag suno pyar ka raag suno re  - TERE GHAR KE SAMNE,Diwana mastana hua dil jaane khana hoke bahar aayi - BOMBAY KA BABU,Kahin deep jale kahin dil - BEES SAAL BAAD,Laal chaadi maidan khadi kya khoob ladi  - JANWAR";
-  file  = "songs.csv";
-  fetch(file)
-  .then(response => 
-    response.text()
-    ).then(
-      text => {
-        songs = text.split("\n");
-        songs.forEach(element => {
-          song = element.split(",");
-          songsDict.push({"song":song[0],"movie":song[1],"link":song[2].substr(song[2].length - 11), "fulllink":song[2]})
-        });
-      });
-  console.log(songsDict);
-  document.querySelector("#timer").addEventListener("click", ()=>{
-    startTimer(TIMER_DURATION,"#time");
-  });
+  this.readFile();
+  console.log(yearDict);
   document.querySelector("#isReady").innerHTML = "Ready";
 };
 
 
-function getSong(){
-  var length = songsDict.length;
+function getSong(year){
+  var length = yearDict[year].length;
+  songsDict = yearDict[year];
+  var totalLength = yearDict["60"].length +yearDict["70"].length+yearDict["80"].length;
   var j = Math.floor(Math.random() * (length + 1 ));
-  if (prevSongs.length===songsDict.length){
+  if (prevSongs.length===totalLength){
     songSS = document.createElement("h1");
     songSS.innerHTML = "Thanks for Playing!";
     document.getElementById("songs").innerHTML ='';
@@ -49,6 +37,7 @@ function getSong(){
   }
   
   if (!prevSongs.includes(songsDict[j].song)){
+
     prevSongs.push(songsDict[j].song);
     var shuffledSentence = songsDict[j].song.split(' ').shuffle().join(' ');
     songSS = document.createElement("h1");
@@ -57,15 +46,17 @@ function getSong(){
     document.getElementById("songs").innerHTML ='';
     document.getElementById("songs").appendChild(songSS);
     
-    var remaining = songsDict.length-prevSongs.length;
+    var remaining = ( yearDict["60"].length + yearDict["70"].length  +yearDict["80"].length)-prevSongs.length;
     document.getElementById("remain").innerHTML =remaining;
 
-    // document.getElementById("player").innerHTML ='';
-    document.getElementById("player").innerHTML="<iframe width='560' height='315' src='https://www.youtube.com/embed/"+songsDict[j].link+"' frameborder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>"
+    document.getElementById("player").innerHTML ='';
+    // document.getElementById("player").innerHTML="<iframe width='560' height='315' src='https://www.youtube.com/embed/"+songsDict[j].link+"' frameborder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>"
     document.getElementById("fulllink").href=songsDict[j].fulllink;
     document.getElementById("fulllink").click(function(e){ e.preventDefault(); window.open(this.href);});
+    this.disableOthers();
+    this.startTimer(TIMER_DURATION, "#time",songsDict[j].movie);
   }else{
-    getSong();
+    getSong(year);
   }
   
   
@@ -76,17 +67,12 @@ function finishGame(){
     document.getElementById("songs").innerHTML ='';
     document.getElementById("songs").appendChild(songSS);
     prevSongs=[];
-    var remaining = songs.length-prevSongs.length;
+    var remaining = ( yearDict["60"].length + yearDict["70"].length  +yearDict["80"].length)-prevSongs.length;
     document.getElementById("remain").innerHTML =remaining;
     document.getElementById("player").innerHTML ='';
 }
-function findSong(song){
-  for (i=0;i<songsDict.length;i++){
-    if (songsDict[i].song===song)
-      return songsDict[i];
-  }
-}
-function startTimer(duration, display) {
+
+function startTimer(duration, display, movie) {
     var timer = duration, minutes, seconds;
     handler= setInterval(function () {
         minutes = parseInt(timer / 60, 10);
@@ -99,13 +85,37 @@ function startTimer(duration, display) {
 
         if (--timer < 0) {
             clearInterval(handler); 
-            document.querySelector(display).innerHTML = "EXPIRED";
+            document.querySelector(display).innerHTML = "Times up!";
+            document.getElementById("player").innerHTML= "<h2>"+ movie+"</h3>";
+            document.getElementById("y70").disabled = false;
+            document.getElementById("y80").disabled = false;
+            document.getElementById("y60").disabled = false;
         }
     }, 1000);
 }
-function readTextFile(file)
-{
-  var fileContents="";
-  
-  return fileContents;
+function updateTime(){
+  TIMER_DURATION = document.getElementById("timerValue").value;
+  document.getElementById("timerNum").innerHTML = TIMER_DURATION;
+}
+
+function readFile(){
+  file  = "songs.csv";
+  fetch(file)
+  .then(response => 
+    response.text()
+    ).then(
+      text => {
+        songs = text.split("\n");
+        songs.forEach(element => {
+          song = element.split(",");
+          yearDict[song[0]].push({"song":song[1],"movie":song[2],"link":song[3].substr(song[3].length - 11), "fulllink":song[3]})
+        });
+        console.log("songs done.")
+      });
+}
+
+function disableOthers(){
+  document.getElementById("y60").disabled = true;
+  document.getElementById("y70").disabled = true;
+  document.getElementById("y80").disabled = true;
 }
