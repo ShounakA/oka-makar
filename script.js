@@ -52,7 +52,7 @@ function getSong(year){
     document.getElementById("player").innerHTML ='';
     // document.getElementById("player").innerHTML="<iframe width='560' height='315' src='https://www.youtube.com/embed/"+songsDict[j].link+"' frameborder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>"
     document.getElementById("fulllink").href=songsDict[j].fulllink;
-    document.getElementById("fulllink").click(function(e){ e.preventDefault(); window.open(this.href);});
+    //document.getElementById("fulllink").click(function(e){ e.preventDefault(); window.open(this.href);});
     this.disableOthers();
     this.startTimer(TIMER_DURATION, "#time",songsDict[j].movie);
   }else{
