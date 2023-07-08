@@ -26,6 +26,7 @@ export default function Home() {
   var songs = useSWR('/api/songs', fetcher).data as Song[];
   var [currentSong, setSong] = useState<Song>({ vidId: 'dQw4w9WgXcQ', title: 'Never Gonna Give You Up' } as Song);
   var [currentIndex, setIndex] = useState<number>(0);
+  var [totalSongs, setTotalSongs] = useState<number>(0);
   var [gameStarted, setGameStarted] = useState<boolean>(false);
   
   const finishGame = () => {
@@ -42,6 +43,7 @@ export default function Home() {
     //@ts-ignore
     songs.shuffle();
     setGameStarted(true);
+    setTotalSongs(songs.length);
   }
 
   const renderStartButton = () => {
@@ -72,7 +74,7 @@ export default function Home() {
           <Player videoId={currentSong.vidId} title={currentSong.title}/>
         </div>
         <p className='m-auto text-5xl'>
-          <em id='songsLeft'>{50 - currentIndex}</em> Left
+          <em id='songsLeft'>{totalSongs - currentIndex}</em> Left
         </p>
         <button className='m-auto w-36 h-12 inline-block rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] hover:text-black focus:outline-none focus:ring active:text-opacity-75' onClick={() => finishGame()}>Finish Game</button>
       </>

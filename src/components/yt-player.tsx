@@ -8,6 +8,7 @@ export default function Player(props: { videoId: string, title: string }) {
     const onReady = (event: any) => {
         setCanShow(false);
         setPlayer(event.target);
+        setAnswer('');
         setTimeout(() => {
             event.target.pauseVideo();
             setAnswer(props.title);
@@ -16,6 +17,7 @@ export default function Player(props: { videoId: string, title: string }) {
 
     const onPlay = (event: any) => {
         setCanShow(false); 
+        setAnswer('');
         setTimeout(() => {
             event.target.pauseVideo();
             setAnswer(props.title);

@@ -14,5 +14,6 @@ npm run dev
 A Youtube API Key is required to get access to the Jingle Jumble playlist.
 The environment variable must be named as follows:
 `YT_API_KEY=<some-api_key`
-
+`YT_PAGE_RESULTS_NUM=<some int>`
+`YT_PLAYLIST_ID=<youtube playlist id>`
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
