@@ -1,12 +1,22 @@
+"use client";
 import Player from '@/components/yt-player';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { Song } from './api/songs';
+import { signIn, useSession } from 'next-auth/react';
+import Login from '@/components/login';
+import { SpotifySession } from '@/utils/spotify_player';
+import ScoreKeeperPlayer from '@/components/scorekeeper-player';
 
 const TIMER_DURATION = 15; //in seconds
 
 //@ts-ignore
-const fetcher = (...args: any[]) => fetch(...args).then(res => res.json());
+const fetcher = (params) => {
+  const [url, token, methodType, ] = params;
+  if (!token) return fetch(url).then(res => res.json());
+  else fetch(url, { headers: {'Authorization': `Bearer ${token}`}}).then(res => res.json());
+
+}
 
 //@ts-ignore
 Array.prototype.shuffle = function() {
@@ -43,7 +53,7 @@ export default function Home() {
     //@ts-ignore
     songs.shuffle();
     setGameStarted(true);
-    setTotalSongs(songs.length);
+    setTotalSongs(songs.length + 1);
   }
 
   const renderStartButton = () => {
@@ -82,9 +92,22 @@ export default function Home() {
     }
   }
 
+  const { data: session } = useSession();
+  const [token, setToken] = useState<string>('');
+  const [devices, setDevices] = useState<any[]>([]); // [id, name, type
+  const getDevices = useSWR(['https://api.spotify.com/v1/me/player/devices', token], fetcher).data;
+  useEffect(() => {
+    if (session) {
+      setToken((session as SpotifySession).accesstoken);
+      setDevices(getDevices);
+    }
+  })
+
+  
   return (
     <div className='bg-gray-900 text-white h-[100vh]'>
      <div className='flex flex-col h-[80vh] m-auto'>
+     <Login />
       <div className='m-auto text-center text-3xl'>
         <h2>Jingle Jumble</h2>
         <h3 className='text-2xl'>Identify the name of the song that is playing in <em id='timerNum'>{TIMER_DURATION}</em> secs.</h3>
@@ -93,6 +116,7 @@ export default function Home() {
       </div>
       { renderStartButton() }
       { renderGameButtons() }
+      <ScoreKeeperPlayer token={token} />
     </div>
     </div>
   );
