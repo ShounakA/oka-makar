@@ -2,6 +2,9 @@ import { SpotifySession } from "@/utils/spotify_player";
 import NextAuth from "next-auth";
 import SpotifyProvider from "next-auth/providers/spotify";
 
+import { InsertUser, users } from '@/../drizzle/schema';
+import { db } from "@/db/db";
+
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const host = process.env.DEV_HOST ?? 'https://nak-player.vercel.app';
@@ -85,8 +88,10 @@ export const authOptions = {
          user: any;
          account: any;
       }) {
+         console.log('creds', user, account);
          // Initial sign in
          if (account && user) {
+            db.insert(users).values({ username: user.email, name: user.name }).run();
             return {
                accessToken: account.access_token,
                accessTokenExpires: Date.now() + account.expires_at * 1000,
