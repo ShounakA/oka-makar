@@ -54,15 +54,28 @@ export interface Player {
 }
 
 export class SpotifyPlayer {
-   public static play = (token: string, deviceID: string) => fetch('https://api.spotify.com/v1/me/player/play', { method: 'PUT', headers: { 'Authorization': `Bearer ${token}`}, body: JSON.stringify({ deviceID }) });
-   public static pause = (token: string) => fetch('https://api.spotify.com/v1/me/player/pause', { method: 'PUT', headers: { 'Authorization': `Bearer ${token}` } });
 
-   public static getPlayListItems = async (token: string, playlistID: string) => {
-      const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`, { headers: { 'Authorization': `Bearer ${token}` } });
+   constructor(private token: string) {}
+   private headers = {'Authorization': `Bearer ${this.token}`}
+   public play = async () => fetch(`https://api.spotify.com/v1/me/player/play`, { method: 'PUT', headers: this.headers });
+   public transferDevice = async (deviceID: string) => fetch(`https://api.spotify.com/v1/me/player`, { method: 'PUT', headers: this.headers, body: JSON.stringify({ device_ids: [deviceID] }) });
+   public pause = async () => fetch('https://api.spotify.com/v1/me/player/pause', { method: 'PUT', headers: this.headers });
+
+   public getUser = async () => 
+      fetch('https://api.spotify.com/v1/me', { 
+            headers: this.headers
+      });
+   public getUserPlaylists = async (userId: string, limit: number = 50) => await fetch(`https://api.spotify.com/v1/users/${userId}/playlists?limit=${limit}`, { 
+      headers: {'Authorization': `Bearer ${this.token}`}
+   });
+   public getPlayListItems = async (playlistID: string) => {
+      const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`, { headers: this.headers });
       const data = await response.json();
       const items = data.items;
       return items.map((item: any) => item.track);
-   }
+   };
 
+   public getPlaybackState = async () => fetch('https://api.spotify.com/v1/me/player', { method: 'GET', headers: this.headers });
 
+   public getDevices = async () => fetch('https://api.spotify.com/v1/me/player/devices', { method: 'GET', headers: this.headers });
 }

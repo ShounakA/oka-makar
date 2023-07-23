@@ -1,60 +1,82 @@
 import { SpotifyPlayer } from '@/utils/spotify_player';
 import React, { useEffect, useState } from 'react';
+import { IconButton, PrimaryButton } from './reusable';
+import { GoBroadcast, GoPlay, GoStopwatch } from 'react-icons/go';
+import { AiOutlinePauseCircle } from "react-icons/ai";
 
-function ScoreKeeperPlayer(props: { token: string }) {
+function ScoreKeeperPlayer(props: { spotifyClient: SpotifyPlayer }) {
     const [title, setTitle] = useState<string>('Loading...');
     const [playing, setPlaying] = useState<boolean>(false);
+    const [updatePlaybackState, setUpdatePlaybackState] = useState<boolean>(false); // this is only there to trigger a re-render on device change
+    const spotifyClient = props.spotifyClient;
 
-    const DEVICE_ID = '10b8abd80d87f17ba0172f09bf36b2775901b582';
+    // Gets the playback state from spotify and updates the state
     const getPlayerState = () => {
-        fetch('https://api.spotify.com/v1/me/player', { method: 'GET', headers: { 'Authorization': `Bearer ${props.token}`}})
-            .then(res => res.json()
-                        .then(data => {
-                            setTitle(data?.item?.name);
-                        }));
+        spotifyClient?.getPlaybackState()
+        .then(res => res.json()
+        .then(data => {
+            // Initial playing state
+            if (title === 'Loading...') setPlaying(data?.is_playing);
+            setTitle(data?.item?.name);
+        }).catch(err => console.log(err)));
     }
-
+    
+    // Toggles devices playing state
     const togglePlayPause = () => {
         if (playing) {
-            SpotifyPlayer.pause(props.token);
+            spotifyClient.pause();
             setPlaying(false);
         } else {
-            SpotifyPlayer.play(props.token, DEVICE_ID);
+            spotifyClient.play();
             setPlaying(true);
         }
-        getPlayerState();
     }
-
+    
+    // Plays the active spotify device for seconds provided and then pauses
     const playForSeconds = (seconds: number) => {
         if (!playing) {
-            SpotifyPlayer.play(props.token, DEVICE_ID);
+            spotifyClient.play();
             setPlaying(true);
         }
         setTimeout(() => {
-            SpotifyPlayer.pause(props.token);
+            spotifyClient.pause();
             setPlaying(false);
         }, seconds * 1000)
     }
 
+    // Sets a timer to update to trigger playback state update every 5 seconds
+    const playBackUpdate = () => setTimeout(() => {
+        setUpdatePlaybackState(!updatePlaybackState);
+    }, 10000);
+
+    // Update states when title playing or updateplaybackstate changes
     useEffect(() => {
         getPlayerState();
-    }, [title]);
+        playBackUpdate();
+    }, [title, playing, updatePlaybackState]);
 
+    const pause = <div className='flex leading-4'><AiOutlinePauseCircle /> <span className="pl-1">Pause</span></div>;
+    const play = <div className='flex leading-4'><GoPlay /> <span className="pl-1">Play</span></div>;
     return (
-        <div className='flex flex-row'>
-            <button 
-                onClick={() => togglePlayPause()} 
-                className='m-auto w-36 h-12 inline-block rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] hover:text-black focus:outline-none focus:ring active:text-opacity-75' 
-            > 
-                { playing ? 'Pause' : 'Play' } 
-            </button>
-            <button 
-                onClick={() => playForSeconds(15)}
-                className='m-auto w-36 h-12 inline-block rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] hover:text-black focus:outline-none focus:ring active:text-opacity-75' 
-            >
-                Play for 15 Seconds
-            </button>
-            <h1 className='m-auto text-5xl'>{title}</h1>
+        <div className='flex flex-row justify-evenly pt-2 '>
+            <PrimaryButton onClick={(_event) => togglePlayPause()} >
+                <strong>
+                    { playing ? pause : play }
+                </strong>
+            </PrimaryButton>
+            <IconButton onClick={(_event) => playForSeconds(15)} tooltip='Time Play' className='px-2'>
+                <GoStopwatch />
+            </IconButton>
+            <IconButton onClick={(_event) => togglePlayPause()} tooltip='Broadcast' >
+                <GoBroadcast />
+            </IconButton>
+            <div className='w-[50%]'>
+                {/*//@ts-ignore*/}
+                <marquee className='m-auto text-5xl min-w-46' behavior='alternate'>
+                    <h1 className='text-5xl text-center leading-[5rem]'>{title}</h1>
+                {/*//@ts-ignore*/}
+                </marquee>
+            </div>
         </div>
     )
 }

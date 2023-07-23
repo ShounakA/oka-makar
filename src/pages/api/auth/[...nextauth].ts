@@ -2,7 +2,7 @@ import { SpotifySession } from "@/utils/spotify_player";
 import NextAuth from "next-auth";
 import SpotifyProvider from "next-auth/providers/spotify";
 
-import { InsertUser, users } from '@/../drizzle/schema';
+import { users } from '@/../drizzle/schema';
 import { db } from "@/db/db";
 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
@@ -59,8 +59,6 @@ async function refreshAccessToken(token: { refreshToken: any }) {
          refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
       };
    } catch (error) {
-      console.log(error);
-
       return {
          ...token,
          error: 'RefreshAccessTokenError',
@@ -88,10 +86,13 @@ export const authOptions = {
          user: any;
          account: any;
       }) {
-         console.log('creds', user, account);
          // Initial sign in
          if (account && user) {
-            db.insert(users).values({ username: user.email, name: user.name }).run();
+            try {
+               await db.insert(users).values({ username: user.email, name: user.name }).run();
+            } catch(error) {
+               console.log('error inserting user, probably already exists');
+            }
             return {
                accessToken: account.access_token,
                accessTokenExpires: Date.now() + account.expires_at * 1000,
@@ -104,7 +105,6 @@ export const authOptions = {
          if (Date.now() < token.accessTokenExpires) {
             return token;
          }
-
          // Access token has expired, try to update it
          return refreshAccessToken(token);
       },
@@ -118,7 +118,6 @@ export const authOptions = {
          session.user = token.user;
          session.accesstoken = token.accessToken;
          session.error = token.error;
-
          return session;
       },
    },
