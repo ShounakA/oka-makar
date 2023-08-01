@@ -49,5 +49,5 @@ export default async function handler(
         }
         pageToken = nextSongs.data.nextPageToken;
     }
-    res.status(200).json(vids)
+    return res.status(200).json(vids)
 }

@@ -5,7 +5,7 @@ import { SpotifyPlayer, SpotifySession } from "@/utils/spotify_player";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import { Score } from "../../drizzle/schema";
+import { Score } from "@nak-jumble/db/schema";
 
 //@ts-ignore
 const fetcher = (args) => {

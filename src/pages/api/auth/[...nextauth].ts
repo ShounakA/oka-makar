@@ -2,8 +2,8 @@ import { SpotifySession } from "@/utils/spotify_player";
 import NextAuth from "next-auth";
 import SpotifyProvider from "next-auth/providers/spotify";
 
-import { users } from '@/../drizzle/schema';
-import { db } from "@/db/db";
+import { users } from '@nak-jumble/db/schema';
+import tursoDb from '@nak-jumble/db/client';
 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
@@ -89,7 +89,7 @@ export const authOptions = {
          // Initial sign in
          if (account && user) {
             try {
-               await db.insert(users).values({ username: user.email, name: user.name }).run();
+               await tursoDb.insert(users).values({ username: user.email, name: user.name }).run();
             } catch(error) {
                console.log('error inserting user, probably already exists');
             }

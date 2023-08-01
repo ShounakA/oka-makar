@@ -13,11 +13,11 @@ const AUTH_TOKEN = process.env.DB_AUTH_TOKEN;
 if(!AUTH_TOKEN) throw new Error('DB_AUTH_TOKEN is not set');
 
 export default {
-  schema: "./drizzle/schema.ts",
+  schema: "./schema.ts",
   driver: 'turso',
   dbCredentials: {
     url: CONNECTION_URL,
     authToken: AUTH_TOKEN
   },
-  out: "./drizzle/migrations",
+  out: "./migrations",
 } satisfies Config;

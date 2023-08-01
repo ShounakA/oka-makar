@@ -1,23 +1,20 @@
 {
-  "name": "guess-the-song",
+  "name": "nak-jumble",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "db:migrate": "drizzle-kit push:sqlite",
-    "db:schema": "drizzle-kit generate:sqlite"
+    "lint": "next lint"
   },
   "dependencies": {
-    "@libsql/client": "^0.3.0",
+    "@nak-jumble/db": "latest",
     "@types/node": "20.3.2",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
     "autoprefixer": "10.4.14",
     "dotenv": "^16.3.1",
-    "drizzle-orm": "^0.27.2",
     "googleapis": "^120.0.0",
     "next": "13.4.7",
     "next-auth": "^4.22.1",
@@ -31,7 +28,7 @@
     "ts-node": "^10.9.1",
     "typescript": "5.1.6"
   },
-  "devDependencies": {
-    "drizzle-kit": "^0.19.8"
-  }
+  "workspaces": [
+    "packages/db"
+  ]
 }

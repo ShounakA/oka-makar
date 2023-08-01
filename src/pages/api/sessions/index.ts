@@ -1,6 +1,6 @@
-import { db } from "@/db/db";
+import tursoDb from '@nak-jumble/db/client';
 import { NextApiRequest, NextApiResponse } from "next";
-import { Session, sessions } from "../../../../drizzle/schema";
+import { Session, sessions } from "@nak-jumble/db/schema";
 import { SpotifySession } from "@/utils/spotify_player";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
@@ -28,7 +28,7 @@ export default async function handler(
             return res.status(400).json({ error: 'Invalid body' });
          }
          var randomstring = Math.random().toString(36).slice(-6);
-         const session = await db.insert(sessions)
+         const session = await tursoDb.insert(sessions)
                                  .values({ 
                                             passCode: randomstring, 
                                             scoreKeeperUserName: scoreKeeperUserName, 

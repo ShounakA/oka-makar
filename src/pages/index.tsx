@@ -116,7 +116,6 @@ export default function Home() {
       </div>
       { renderStartButton() }
       { renderGameButtons() }
-      <ScoreKeeperPlayer token={token} />
     </div>
     </div>
   );

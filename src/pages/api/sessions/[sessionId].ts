@@ -1,6 +1,6 @@
-import { db } from "@/db/db";
+import tursoDb from '@nak-jumble/db/client';
 import { NextApiRequest, NextApiResponse } from "next";
-import { Score, scores } from "../../../../drizzle/schema";
+import { Score, scores } from "@nak-jumble/db/schema";
 import { eq } from "drizzle-orm";
 import { SpotifySession } from "@/utils/spotify_player";
 import { getServerSession } from "next-auth";
@@ -34,7 +34,7 @@ export default async function handler(
             res.status(400).json({ error: 'sessionId is required' });
          } else {
             const id = parseInt(sessionId);
-            const sessionScore = await db.select({ score: scores.score, name: scores.player }).from(scores).where(eq(scores.session, id)).run();         
+            const sessionScore = await tursoDb.select({ score: scores.score, name: scores.player }).from(scores).where(eq(scores.session, id)).run();         
             return res.status(200).json(sessionScore);
          }
       }
